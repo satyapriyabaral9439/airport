@@ -26,6 +26,18 @@ class AirportList extends Component {
             }
         }
     }
+
+    getReverseButton(reverseId, transaction) {
+        if(reverseId === true) {
+            return <button disabled >Reversed</button>
+        } else {
+            return <button onClick={() => this.handleReverse(transaction)}>Reverse</button>
+        }
+    }
+
+    handleReverse(transaction) {
+        this.props.onReverse(transaction);  
+    }
     render() {
         const aircrafts = this.props.aircrafts;
         const airports = this.props.airports;
@@ -58,7 +70,7 @@ class AirportList extends Component {
                                             <td>{this.getAircraftDom(transaction.aircraft_id, aircrafts, "aircraft_no")}</td>
                                             <td>{this.getAircraftDom(transaction.aircraft_id, aircrafts, "airline")}</td>
                                             <td>{transaction.quantity}</td>
-                                            <td>{transaction.isReverse}</td>
+                                            <td>{this.getReverseButton(transaction.isReverse, transaction)}</td>
                                         </tr>
                                     })
                                 }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {sortAirport, addTransaction} from '../../store/actions/airportAction'
+import {sortAirport, addTransaction, reverseTransaction, updateAirport} from '../../store/actions/airportAction'
 import CreateTransaction from '../airport/CreateTransaction.js'
 
 class Dashboard extends Component {
@@ -17,15 +17,14 @@ class Dashboard extends Component {
     }
 
     onSave = (transaction_details) => {
-        //var data = this.state.data
-        console.log(transaction_details);
-        this.props.addTransaction(transaction_details);
-        // if(this.state.currentIndex === -1) {
-        //     data.push(product_details)
-        // } else {
-        //     data[this.state.currentIndex] = product_details
-        // }
-        //  this.setState({ data, currentIndex: -1 })
+       this.props.addTransaction(transaction_details);
+       this.props.updateAirport(transaction_details, false);
+    }
+
+    onReverse = (transaction) => {
+        console.log(transaction.transaction_id)
+        this.props.reverseTransaction(transaction.transaction_id);
+        this.props.updateAirport(transaction, true);
     }
 
     render() {
@@ -80,7 +79,7 @@ class Dashboard extends Component {
                     </div>
                 </div>
                 <div className="row">
-                    <CreateTransaction airports={airport_data} aircrafts={aircrafts} transactions={transactions} onSave = {this.onSave} />
+                    <CreateTransaction airports={airport_data} aircrafts={aircrafts} transactions={transactions} onSave = {this.onSave} onReverse = {this.onReverse} />
                 </div>
             </div>
         )
@@ -99,7 +98,9 @@ const mapDispatchToProps = (dispatch) => {
     //return bindActionCreators({
         return {
             sortAirport: (airport) => dispatch(sortAirport(airport)),
-            addTransaction: (transaction_details) => dispatch(addTransaction(transaction_details))
+            addTransaction: (transaction_details) => dispatch(addTransaction(transaction_details)),
+            reverseTransaction: (transaction_Id) => dispatch(reverseTransaction(transaction_Id)),
+            updateAirport: (transaction, reverse) => dispatch(updateAirport(transaction, reverse))
         }
     //},dispatch);
 }

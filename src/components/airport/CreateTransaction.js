@@ -80,7 +80,7 @@ class CreateTransaction extends Component {
                         </div>
                     </div>
                 </form>
-                <AirportList airports={airports} aircrafts={aircrafts} transactions={transactions}></AirportList>
+                <AirportList airports={airports} aircrafts={aircrafts} transactions={transactions} onReverse = {this.props.onReverse}></AirportList>
             </div>
         )
     }
