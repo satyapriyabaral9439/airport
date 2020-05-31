@@ -12,17 +12,83 @@ class CreateTransaction extends Component {
             transaction_type:'',
             quantity:'',
             airport_name:'',
-            aircraft_no:''
+            aircraft_no:'',
+            airport_error: '',
+            aircraft_error: '',
+            quantity_error: '',
+            type_error: ''
         }
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
         console.log(this.state);
-        this.props.onSave(this.state);
-            //this.updateState(true);
-        
+        if (this.checkForErrors() === false) {
+            if(this.checkQuantityDetails() === false) {
+                this.props.onSave(this.state);
+                this.updateState();
+            }
+        }
     }
+
+    updateState() {
+        this.setState({ airport_id : '', aircraft_id : '', fuel_in_out : '', transaction_date_time: '', transaction_type:'', quantity:'', airport_name:'', aircraft_no:''})
+    }
+
+    checkQuantityDetails() {
+        var error = false
+        console.log(error)
+        var airportId = this.state.airport_id
+        var airports = this.props.airports;
+        for (var i=0; i < airports.length; i++) {
+            if (airports[i].airport_id === airportId) {
+                var updated_fuel_capacity = airports[i].fuel_capacity - airports[i].fuel_available;
+                if(this.state.transaction_type === "IN") {
+                    if(updated_fuel_capacity < this.state.quantity) {
+                        alert("Not Enough Fuel Capacity");
+                        error = true;
+                    }
+                } else {
+                    if(airports[i].fuel_available < this.state.quantity) {
+                        alert("Not Enough Fuel");
+                        error = true;
+                    }
+                }
+            }
+        }
+        console.log(error)
+        return error
+    }
+
+    checkForErrors() {
+        var error = false;
+        if(this.state.airport_id.length < 1) {
+            this.setState({airport_error : "Please Select Airport" })
+            error = true;
+        } else {
+            this.setState({airport_error : "" })
+        }
+        if(this.state.aircraft_id.length < 1 && this.state.transaction_type === "OUT") {
+            this.setState({aircraft_error : "Please Select Aicraft" })
+            error = true;
+        } else {
+            this.setState({aircraft_error : "" })
+        }
+        if(this.state.transaction_type.length < 1) {
+            this.setState({type_error : "Please Select Transaction Type" })
+            error = true;
+          } else {
+            this.setState({type_error : "" })
+          }
+        if(this.state.quantity.length < 1 || this.state.quantity <= 0) {
+            this.setState({quantity_error : "Please Enter a vadid Quantity" })
+            error = true;
+        } else {
+            this.setState({quantity_error : "" })
+        }
+        return error;
+    }
+
     handleInputChanges = (event) => {
         this.setState({ [event.target.name]: event.target.value});
     }
@@ -33,7 +99,8 @@ class CreateTransaction extends Component {
         let renderAccordingCondition;
         if (this.state.transaction_type === "IN") {
             renderAccordingCondition =  <div className="col-sm-3">
-                                            <input type="text" className="form-control" name="quantity" id="quantity"  value={this.state.quantity} placeholder="Enter Quantity" onChange={this.handleInputChanges}></input>
+                                            <input type="number" className="form-control" name="quantity" id="quantity"  value={this.state.quantity} placeholder="Enter Quantity" onChange={this.handleInputChanges}></input>
+                                            <span style={{color:"red"}}>{this.state.quantity_error}</span>
                                         </div>;
           } else if (this.state.transaction_type === "OUT"){
             renderAccordingCondition = <div className="col-sm-6 row">
@@ -46,9 +113,11 @@ class CreateTransaction extends Component {
                                                     })
                                                 }
                                             </select>
+                                            <span style={{color:"red"}}>{this.state.aircraft_error}</span>
                                         </div>
                                         <div className="col-sm-6">
-                                            <input type="text" className="form-control" name="quantity" id="quantity"  value={this.state.quantity} placeholder="Enter Quantity" onChange={this.handleInputChanges}></input>
+                                            <input type="number" className="form-control" name="quantity" id="quantity"  value={this.state.quantity} placeholder="Enter Quantity" onChange={this.handleInputChanges}></input>
+                                            <span style={{color:"red"}}>{this.state.quantity_error}</span>
                                         </div></div>;
           }
         return (
@@ -64,6 +133,7 @@ class CreateTransaction extends Component {
                                     })
                                 }
                             </select>
+                            <span style={{color:"red"}}>{this.state.airport_error}</span>
                         </div>
                         <div className="col-sm-3">
                             <select className="form-control" name="transaction_type" id="category" value={this.state.transaction_type} onChange={this.handleInputChanges}>
@@ -71,6 +141,7 @@ class CreateTransaction extends Component {
                                     <option>IN</option>
                                     <option>OUT</option>
                             </select>
+                            <span style={{color:"red"}}>{this.state.type_error}</span>
                         </div>
                         {renderAccordingCondition}
                     </div>

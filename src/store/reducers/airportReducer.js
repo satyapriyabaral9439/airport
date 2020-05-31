@@ -17,7 +17,6 @@ const initialState = {
     transactions: []
 }
 const airportReducer = (state = initialState, action) => {
-    //return state
     var stateCopy = [];
 
     switch(action.type){
