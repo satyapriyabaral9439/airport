@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import AirportList from './AirportList.js'
 
 class CreateTransaction extends Component {
     constructor(props) {
@@ -29,8 +30,6 @@ class CreateTransaction extends Component {
         const aircrafts = this.props.aircrafts;
         const airports = this.props.airports;
         const transactions = this.props.transactions;
-        console.log(aircrafts);
-        console.log(airports);
         let renderAccordingCondition;
         if (this.state.transaction_type === "IN") {
             renderAccordingCondition =  <div className="col-sm-3">
@@ -73,7 +72,7 @@ class CreateTransaction extends Component {
                                     <option>OUT</option>
                             </select>
                         </div>
-                        { renderAccordingCondition }
+                        {renderAccordingCondition}
                     </div>
                     <div className="form-group row">
                         <div className="col-sm-5">
@@ -81,38 +80,7 @@ class CreateTransaction extends Component {
                         </div>
                     </div>
                 </form>
-                <div className="row">
-                    <div className="col-md-6">
-                        <table className="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Transaction Id</th>
-                                    <th>Date/Time</th>
-                                    <th>Transaction Type</th>
-                                    <th>Airport Name</th>
-                                    <th>Aircraft No</th>
-                                    <th>Quantity</th>
-                                    <th>Reverse</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {
-                                    transactions.map((transaction)=> {
-                                        return <tr key={transaction.transaction_id}>
-                                            <td>{transaction.transaction_id}</td>
-                                            <td>{transaction.transaction_date_time}</td>
-                                            <td>{transaction.ransaction_type}</td>
-                                            <td>{transaction.airport_id}</td>
-                                            <td>{transaction.aircraft_id}</td>
-                                            <td>{transaction.quantity}</td>
-                                            <td>{transaction.isReverse}</td>
-                                        </tr>
-                                    })
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <AirportList airports={airports} aircrafts={aircrafts} transactions={transactions}></AirportList>
             </div>
         )
     }
