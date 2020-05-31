@@ -1,29 +1,38 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import {sortAirport} from '../../store/actions/airportAction'
+import {sortAirport, addTransaction} from '../../store/actions/airportAction'
+import CreateTransaction from '../airport/CreateTransaction.js'
 
 class Dashboard extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            data : []
         }
-        this.sortAirport = this.sortAirport.bind(this);
     }
 
-    sortAirport(airports, id) {
-        console.log(airports);
-        console.log(airports[4].airport_name);
-        airports[4].airport_name = "satya";
-        console.log(airports);
-        console.log("inside");
-            this.props.sortAirport(airports); 
+    sortAirport(airports, key) {
+        console.log(key)
+        airports = airports.sort( (a, b) => a < b)
+        console.log(airports)
+    }
+
+    onSave = (transaction_details) => {
+        //var data = this.state.data
+        console.log(transaction_details);
+        this.props.addTransaction(transaction_details);
+        // if(this.state.currentIndex === -1) {
+        //     data.push(product_details)
+        // } else {
+        //     data[this.state.currentIndex] = product_details
+        // }
+        //  this.setState({ data, currentIndex: -1 })
     }
 
     render() {
-        const { airports } = this.props;
         const { aircrafts } = this.props;
+        const { transactions } = this.props;
+        let airport_data = []
+        airport_data = Object.assign([], airport_data, this.props.airports);
         return (
             <div className="container">
                 <div className="row">
@@ -31,18 +40,14 @@ class Dashboard extends Component {
                         <table className="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <button onClick={() => this.sortAirport(airports, 'airport_name')}>
-                                            Airport Name
-                                        </button>
-                                        </th>
+                                    <th>Airport Name</th>
                                     <th>Fuel Capacity</th>
                                     <th>Fuel Available</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    airports.map((airport)=> {
+                                    airport_data.map((airport)=> {
                                         return <tr key={airport.airport_id}>
                                             <td>{airport.airport_name}</td>
                                             <td>{airport.fuel_capacity}</td>
@@ -74,6 +79,9 @@ class Dashboard extends Component {
                         </table>
                     </div>
                 </div>
+                <div className="row">
+                    <CreateTransaction airports={airport_data} aircrafts={aircrafts} transactions={transactions} onSave = {this.onSave} />
+                </div>
             </div>
         )
     }
@@ -82,14 +90,18 @@ class Dashboard extends Component {
 const mapStateToProps = (state) => {
     return {
         airports: state.airport.airports,
-        aircrafts: state.airport.aircrafts
+        aircrafts: state.airport.aircrafts,
+        transactions: state.airport.transactions
     }
 }
   
 const mapDispatchToProps = (dispatch) => {
-    return bindActionCreators({
-        sortAirport:sortAirport
-    },dispatch);
+    //return bindActionCreators({
+        return {
+            sortAirport: (airport) => dispatch(sortAirport(airport)),
+            addTransaction: (transaction_details) => dispatch(addTransaction(transaction_details))
+        }
+    //},dispatch);
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(Dashboard);
