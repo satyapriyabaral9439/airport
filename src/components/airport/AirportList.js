@@ -45,7 +45,7 @@ class AirportList extends Component {
         return (
             <div className="container">
                 <div className="row">
-                    <div className="col-md-10">
+                    <div className="col-md-12">
                         <table className="table table-bordered">
                             <thead>
                                 <tr>

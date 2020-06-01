@@ -14,7 +14,13 @@ const initialState = {
         {aircraft_id: '4', aircraft_no: 'AI9511', airline:'Air India'},
         {aircraft_id: '5', aircraft_no: '6E 23', airline:'Indigo'}
     ],
-    transactions: []
+    transactions: [
+        {transaction_id: '1', transaction_date_time : '6/1/2020, 2:50:58 AM', transaction_type : 'IN', airport_id: '1', quantity: 45000, isReverse: false},
+        {transaction_id: '2', transaction_date_time : '6/1/2020, 2:52:53 AM', transaction_type : 'IN', airport_id: '2', quantity: 30000, isReverse: false},
+        {transaction_id: '3', transaction_date_time : '6/1/2020, 2:56:54 AM', transaction_type : 'IN', airport_id: '3', quantity: 59000, isReverse: false},
+        {transaction_id: '4', transaction_date_time : '6/1/2020, 2:51:21 AM', transaction_type : 'IN', airport_id: '4', quantity: 67000, isReverse: false},
+        {transaction_id: '5', transaction_date_time : '6/1/2020, 2:01:22 AM', transaction_type : 'IN', airport_id: '5', quantity: 75000, isReverse: false}
+    ]
 }
 const airportReducer = (state = initialState, action) => {
     var stateCopy = [];

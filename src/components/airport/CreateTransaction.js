@@ -37,7 +37,6 @@ class CreateTransaction extends Component {
 
     checkQuantityDetails() {
         var error = false
-        console.log(error)
         var airportId = this.state.airport_id
         var airports = this.props.airports;
         for (var i=0; i < airports.length; i++) {
