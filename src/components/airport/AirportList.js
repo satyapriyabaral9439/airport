@@ -4,6 +4,13 @@ class AirportList extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            transaction_state: this.props.transactions,
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if(this.props.transactions !== this.state.transaction_state) {
+            this.setState({ transaction_state: this.props.transactions })
         }
     }
 
@@ -27,6 +34,18 @@ class AirportList extends Component {
         }
     }
 
+    sortData = (data, key) => {
+        let sortOrder = this.state.order
+        this.setState({
+            order: !sortOrder
+        }, () => {
+            data.sort(function (a, b) {
+                return (sortOrder ? (a[key] > b[key] ? 1 : -1) : (a[key] > b[key] ? -1 : 1));
+            });
+            this.setState({})
+        })
+    }
+
     getReverseButton(reverseId, transaction) {
         if(reverseId === true) {
             return <button disabled >Reversed</button>
@@ -41,17 +60,16 @@ class AirportList extends Component {
     render() {
         const aircrafts = this.props.aircrafts;
         const airports = this.props.airports;
-        const transactions = this.props.transactions;
         return (
             <div className="container">
                 <div className="row">
                     <div className="col-md-12">
-                        <table className="table table-bordered">
+                        <table className="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Transaction Id</th>
-                                    <th>Date/Time</th>
-                                    <th>Transaction Type</th>
+                                    <th onClick={() => this.sortData(this.state.transaction_state, "transaction_id")}>Id  &#8593;&#8595;</th>
+                                    <th onClick={() => this.sortData(this.state.transaction_state, "transaction_date_time")}>Date/Time  &#8593;&#8595;</th>
+                                    <th onClick={() => this.sortData(this.state.transaction_state, "transaction_type")}>Transaction Type  &#8593;&#8595;</th>
                                     <th>Airport Name</th>
                                     <th>Aircraft No</th>
                                     <th>Airline</th>
@@ -61,7 +79,7 @@ class AirportList extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    transactions.map((transaction)=> {
+                                    this.state.transaction_state.map((transaction)=> {
                                         return <tr key={transaction.transaction_id}>
                                             <td>{transaction.transaction_id}</td>
                                             <td>{transaction.transaction_date_time}</td>

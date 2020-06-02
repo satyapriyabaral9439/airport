@@ -1,52 +1,62 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {sortAirport, addTransaction, reverseTransaction, updateAirport} from '../../store/actions/airportAction'
-import CreateTransaction from '../airport/CreateTransaction.js'
+import { initializeAirport, initializeAircraft } from '../../store/actions/airportAction'
 
 class Dashboard extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            order: false,
+            airport_state: this.props.airports,
+            aircraft_state: this.props.aircrafts
         }
     }
 
-    sortAirport(airports, key) {
-        console.log(key)
-        airports = airports.sort( (a, b) => a < b)
-        console.log(airports)
+    componentDidUpdate(prevProps) {
+        if(this.props.airports !== this.state.airport_state) {
+            this.setState({ airport_state: this.props.airports })
+        }
+        if(this.props.aircrafts !== this.state.aircraft_state) {
+            this.setState({ aircraft_state: this.props.aircrafts })
+        }
     }
 
-    onSave = (transaction_details) => {
-       this.props.addTransaction(transaction_details);
-       this.props.updateAirport(transaction_details, false);
+    initializeData(prevProps) {
+        this.props.initializeAirport();
+        this.props.initializeAircraft();
     }
 
-    onReverse = (transaction) => {
-        console.log(transaction.transaction_id)
-        this.props.reverseTransaction(transaction.transaction_id);
-        this.props.updateAirport(transaction, true);
+    sortData = (data, key) => {
+        let sortOrder = this.state.order
+        this.setState({
+            order: !sortOrder
+        }, () => {
+            data.sort(function (a, b) {
+                return (sortOrder ? (a[key] > b[key] ? 1 : -1) : (a[key] > b[key] ? -1 : 1));
+            });
+            this.setState({})
+        })
     }
 
     render() {
-        const { aircrafts } = this.props;
-        const { transactions } = this.props;
-        let airport_data = []
-        airport_data = Object.assign([], airport_data, this.props.airports);
         return (
             <div className="container">
+                <div className="text-center padding-14px">
+                    <button className="btn btn-primary" onClick={() => this.initializeData()}>Initialize/Reset Airport and Aircraft Data</button>
+                </div>
                 <div className="row">
-                    <div className="col-md-6">
-                        <table className="table table-bordered">
+                    <div className="col-md-7">
+                        <table className="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Airport Name</th>
-                                    <th>Fuel Capacity</th>
-                                    <th>Fuel Available</th>
+                                    <th onClick={() => this.sortData(this.state.airport_state, "airport_name")}>Airport Name &#8593;&#8595;</th>
+                                    <th onClick={() => this.sortData(this.state.airport_state, "fuel_capacity")}>Fuel Capacity &#8593;&#8595;</th>
+                                    <th onClick={() => this.sortData(this.state.airport_state, "fuel_available")}>Fuel Available  &#8593;&#8595;</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    airport_data.map((airport)=> {
+                                    this.state.airport_state.map((airport)=> {
                                         return <tr key={airport.airport_id}>
                                             <td>{airport.airport_name}</td>
                                             <td>{airport.fuel_capacity}</td>
@@ -57,17 +67,17 @@ class Dashboard extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div className="col-md-6">
-                        <table className="table table-bordered">
+                    <div className="col-md-5">
+                        <table className="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Aircraft No</th>
-                                    <th>Airline</th>
+                                    <th onClick={() => this.sortData(this.state.aircraft_state, "aircraft_no")}>Aircraft No  &#8593;&#8595;</th>
+                                    <th onClick={() => this.sortData(this.state.aircraft_state, "airline")}>Airline  &#8593;&#8595;</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    aircrafts.map((aircraft)=> {
+                                    this.state.aircraft_state.map((aircraft)=> {
                                         return <tr key={aircraft.aircraft_id}>
                                             <td>{aircraft.aircraft_no}</td>
                                             <td>{aircraft.airline}</td>
@@ -77,9 +87,6 @@ class Dashboard extends Component {
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div className="row">
-                    <CreateTransaction airports={airport_data} aircrafts={aircrafts} transactions={transactions} onSave = {this.onSave} onReverse = {this.onReverse} />
                 </div>
             </div>
         )
@@ -95,14 +102,10 @@ const mapStateToProps = (state) => {
 }
   
 const mapDispatchToProps = (dispatch) => {
-    //return bindActionCreators({
-        return {
-            sortAirport: (airport) => dispatch(sortAirport(airport)),
-            addTransaction: (transaction_details) => dispatch(addTransaction(transaction_details)),
-            reverseTransaction: (transaction_Id) => dispatch(reverseTransaction(transaction_Id)),
-            updateAirport: (transaction, reverse) => dispatch(updateAirport(transaction, reverse))
-        }
-    //},dispatch);
+    return {
+        initializeAircraft: () => dispatch(initializeAircraft()),
+        initializeAirport: () => dispatch(initializeAirport())
+    }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

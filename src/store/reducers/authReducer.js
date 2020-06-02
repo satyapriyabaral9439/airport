@@ -1,22 +1,29 @@
 import update from 'immutability-helper';
-const defaultState = {
-    users: [
-        {user_id: '1', user_name: 'Satya', email: 'satya@gmail.com', password: 'satya', isSigned: false},
-        {user_id: '2', user_name: 'Mindfire', email: 'mindfire@gmail.com', password: 'mindfire', isSigned: false},
-        {user_id: '3', user_name: 'Rahul', email: 'rahul@gmail.com', password: 'rahul', isSigned: false}
-    ]
-}
-const authReducer = (state = defaultState, action) => {
-    var stateCopy = [];
+const initialState = {
+    username: "",
+    isLoggedIn: false,
+    counter: 0 
+};
 
-    // switch(action.type){
+const authReducer = (state = initialState, action) => {
+    switch (action.type) {
+        case 'AUTH_LOGIN': 
+            return {
+                ...state,
+                username: action.payload,
+                isLoggedIn: true
+            };
+        case 'AUTH_LOGOUT':
+            return initialState;
+        case 'INCREMENT_PROGRESS':
+            var newCounter =  state.counter + 1;
+            return update(state, {counter: {$set: newCounter}}); 
+        case 'DECREMENT_PROGRESS':
+            newCounter =  Math.max(state.counter - 1, 0);;
+            return update(state, {counter: {$set: newCounter}});   
+        default:
+            return state;
+  }
+};
 
-        // case 'SORT_AIRPORT':
-         
-
-        // default:
-        //     return state;
-        // }
-}
-
-export default authReducer
+export default authReducer;

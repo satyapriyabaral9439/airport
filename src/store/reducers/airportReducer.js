@@ -1,35 +1,33 @@
 import update from 'immutability-helper';
 const initialState = {
-    airports: [
-        {airport_id: '1', airport_name: 'Chhatrapati Shivaji Airport', fuel_capacity: 70000, fuel_available: 45000},
-        {airport_id: '2', airport_name: 'Netaji Subhas Chandra Airport', fuel_capacity: 90000 , fuel_available: 30000},
-        {airport_id: '3', airport_name: 'Hindustan Airport', fuel_capacity:60000, fuel_available:59000},
-        {airport_id: '4', airport_name: 'Indira Gandhi International Airport', fuel_capacity:100000, fuel_available:67000},
-        {airport_id: '5', airport_name: 'Chennai Airport', fuel_capacity:75000, fuel_available:75000}
-    ],
-    aircrafts: [
-        {aircraft_id: '1', aircraft_no: '6E 449', airline:'Indigo'},
-        {aircraft_id: '2', aircraft_no: 'G8-1181', airline:'Go Air'},
-        {aircraft_id: '3', aircraft_no: 'UK862', airline:'Vistara'},
-        {aircraft_id: '4', aircraft_no: 'AI9511', airline:'Air India'},
-        {aircraft_id: '5', aircraft_no: '6E 23', airline:'Indigo'}
-    ],
-    transactions: [
-        {transaction_id: '1', transaction_date_time : '6/1/2020, 2:50:58 AM', transaction_type : 'IN', airport_id: '1', quantity: 45000, isReverse: false},
-        {transaction_id: '2', transaction_date_time : '6/1/2020, 2:52:53 AM', transaction_type : 'IN', airport_id: '2', quantity: 30000, isReverse: false},
-        {transaction_id: '3', transaction_date_time : '6/1/2020, 2:56:54 AM', transaction_type : 'IN', airport_id: '3', quantity: 59000, isReverse: false},
-        {transaction_id: '4', transaction_date_time : '6/1/2020, 2:51:21 AM', transaction_type : 'IN', airport_id: '4', quantity: 67000, isReverse: false},
-        {transaction_id: '5', transaction_date_time : '6/1/2020, 2:01:22 AM', transaction_type : 'IN', airport_id: '5', quantity: 75000, isReverse: false}
-    ]
+    airports: [],
+    aircrafts: [],
+    transactions: []
 }
+const airport_array = [
+    {airport_id: '1', airport_name: 'Chennai Airport', fuel_capacity:75000, fuel_available:55000},
+    {airport_id: '2', airport_name: 'Chhatrapati Shivaji Airport', fuel_capacity: 70000, fuel_available: 45000},
+    {airport_id: '3', airport_name: 'Hindustan Airport', fuel_capacity:60000, fuel_available:59000},
+    {airport_id: '4', airport_name: 'Indira Gandhi International Airport', fuel_capacity:100000, fuel_available:67000},
+    {airport_id: '5', airport_name: 'Netaji Subhas Chandra Airport', fuel_capacity: 90000 , fuel_available: 30000}
+]
+const aircraft_array = [
+    {aircraft_id: '5', aircraft_no: '6E 23', airline:'Indigo'},
+    {aircraft_id: '1', aircraft_no: '6E 449', airline:'Indigo'},
+    {aircraft_id: '4', aircraft_no: 'AI9511', airline:'Air India'},
+    {aircraft_id: '2', aircraft_no: 'G8-1181', airline:'Go Air'},
+    {aircraft_id: '3', aircraft_no: 'UK862', airline:'Vistara'}
+]
 const airportReducer = (state = initialState, action) => {
     var stateCopy = [];
 
     switch(action.type){
 
-        case 'SORT_AIRPORT':
-            var index = 4
-            stateCopy = update(state, {airports: {[index]: {airport_name : {$set: "satya"}}}});
+        case 'INITIALIZE_AIRPORT':
+            stateCopy = update(state , {airports: {$set: airport_array}});
+            return stateCopy
+        case 'INITIALIZE_AIRCRAFT':
+            stateCopy = update(state , {aircrafts: {$set: aircraft_array}});
             return stateCopy
         case 'ADD_TRANSACTION':
             var new_transaction_id = state.transactions.length + 1;

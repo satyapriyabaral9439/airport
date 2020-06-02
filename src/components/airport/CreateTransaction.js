@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import AirportList from './AirportList.js'
+import { addTransaction, reverseTransaction, updateAirport } from '../../store/actions/airportAction'
 
 class CreateTransaction extends Component {
     constructor(props) {
@@ -25,7 +27,7 @@ class CreateTransaction extends Component {
         console.log(this.state);
         if (this.checkForErrors() === false) {
             if(this.checkQuantityDetails() === false) {
-                this.props.onSave(this.state);
+                this.onSave(this.state);
                 this.updateState();
             }
         }
@@ -34,6 +36,17 @@ class CreateTransaction extends Component {
     updateState() {
         this.setState({ airport_id : '', aircraft_id : '', fuel_in_out : '', transaction_date_time: '', transaction_type:'', quantity:'', airport_name:'', aircraft_no:''})
     }
+
+    onSave = (transaction_details) => {
+        this.props.addTransaction(transaction_details);
+        this.props.updateAirport(transaction_details, false);
+     }
+ 
+     onReverse = (transaction) => {
+         console.log(transaction.transaction_id)
+         this.props.reverseTransaction(transaction.transaction_id);
+         this.props.updateAirport(transaction, true);
+     }
 
     checkQuantityDetails() {
         var error = false
@@ -92,9 +105,9 @@ class CreateTransaction extends Component {
         this.setState({ [event.target.name]: event.target.value});
     }
     render() {
-        const aircrafts = this.props.aircrafts;
-        const airports = this.props.airports;
-        const transactions = this.props.transactions;
+        const { aircrafts } = this.props;
+        const { airports } = this.props;
+        const { transactions } = this.props;
         let renderAccordingCondition;
         if (this.state.transaction_type === "IN") {
             renderAccordingCondition =  <div className="col-sm-3">
@@ -122,7 +135,7 @@ class CreateTransaction extends Component {
         return (
             <div className="container">
                 <form onSubmit = {this.handleSubmit}>
-                    <div className="form-group row">
+                    <div className="form-group row padding-14px">
                         <div className="col-sm-3">
                             <select className="form-control" name="airport_id" id="category" value={this.state.airport_id} onChange={this.handleInputChanges}>
                                 <option value="">Select Airport</option>
@@ -144,16 +157,32 @@ class CreateTransaction extends Component {
                         </div>
                         {renderAccordingCondition}
                     </div>
-                    <div className="form-group row">
-                        <div className="col-sm-5">
-                            <button type="submit">Save</button>
+                    <div className="form-group text-center">
+                        <div className="col-sm-12">
+                            <button type="submit" className="btn btn-primary">Save</button>
                         </div>
                     </div>
                 </form>
-                <AirportList airports={airports} aircrafts={aircrafts} transactions={transactions} onReverse = {this.props.onReverse}></AirportList>
+                <AirportList airports={airports} aircrafts={aircrafts} transactions={transactions} onReverse = {this.onReverse}></AirportList>
             </div>
         )
     }
 }
 
-export default CreateTransaction;
+const mapStateToProps = (state) => {
+    return {
+        airports: state.airport.airports,
+        aircrafts: state.airport.aircrafts,
+        transactions: state.airport.transactions
+    }
+}
+  
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addTransaction: (transaction_details) => dispatch(addTransaction(transaction_details)),
+        reverseTransaction: (transaction_Id) => dispatch(reverseTransaction(transaction_Id)),
+        updateAirport: (transaction, reverse) => dispatch(updateAirport(transaction, reverse))
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(CreateTransaction);

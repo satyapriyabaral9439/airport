@@ -1,6 +1,12 @@
-export const sortAirport = (airport) => {
+export const initializeAircraft = () => {
     return (dispatch, getState) => {
-        dispatch({ type:'SORT_AIRPORT', payload:airport });
+        dispatch({ type:'INITIALIZE_AIRCRAFT',});
+    }
+};
+
+export const initializeAirport = () => {
+    return (dispatch, getState) => {
+        dispatch({ type:'INITIALIZE_AIRPORT',});
     }
 };
 
@@ -17,7 +23,6 @@ export const reverseTransaction = (transaction_Id) => {
 };
 
 export const updateAirport = (transaction, reverse) => {
-    console.log(reverse);
     return (dispatch, getState) => {
         dispatch({ type:'UPDATE_AIRPORT', payload:transaction, isReverse: reverse });
     }

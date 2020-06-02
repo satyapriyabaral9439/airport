@@ -1,0 +1,34 @@
+.brand-name-left {
+  color: #3335FF;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.brand-name-right {
+  color: #FF7733;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+}
+
+.padding-14px {
+  padding: 14px;
+}
+
+.background-image {
+  /* The image used */
+  background-image: url("../airport-bg.jpg");
+
+  /* Full height */
+  height: 100%; 
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+  
